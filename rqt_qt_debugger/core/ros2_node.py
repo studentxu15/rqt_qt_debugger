@@ -93,14 +93,14 @@ class ROS2TopicNode:
                 msg.frame_id = params[1] if len(params)>1 else "base_link"
             # #################### 位姿类型：Pose ####################
             elif msg_type == "geometry_msgs/msg/Pose":
-                msg.position.x = float(params[0]) if len(params)>0 else 0.0
-                msg.position.y = float(params[1]) if len(params)>1 else 0.0
-                msg.position.z = float(params[2]) if len(params)>2 else 0.0
+                msg.position.x = params["position"].get("x", 0.0)
+                msg.position.y = params["position"].get("y", 0.0)
+                msg.position.z = params["position"].get("z", 0.0)
                 # 四元数：x,y,z,w（ROS标准，w是实部，缺省w=1.0）
-                msg.orientation.x = float(params[3]) if len(params)>3 else 0.0
-                msg.orientation.y = float(params[4]) if len(params)>4 else 0.0
-                msg.orientation.z = float(params[5]) if len(params)>5 else 0.0
-                msg.orientation.w = float(params[6]) if len(params)>6 else 1.0
+                msg.orientation.x = params["orientation"].get("x", 0.0)
+                msg.orientation.y = params["orientation"].get("y", 0.0)
+                msg.orientation.z = params["orientation"].get("z", 0.0)
+                msg.orientation.w = params["orientation"].get("w", 1.0)
             elif msg_type == "geometry_msgs/msg/PoseStamped":
                 offset_sec = float(params[0]) if params else 0.0
                 msg.header.stamp = self._get_ros_time_with_offset(offset_sec)

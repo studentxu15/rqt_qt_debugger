@@ -85,7 +85,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setGeometry(QtCore.QRect(850, 20, 70, 40))
         self.pushButton_2.setObjectName("pushButton_2")
         self.btn_open_input = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.btn_open_input.setGeometry(QtCore.QRect(320, 120, 101, 25))
+        self.btn_open_input.setGeometry(QtCore.QRect(320, 110, 101, 40))
         self.btn_open_input.setObjectName("btn_open_input")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
