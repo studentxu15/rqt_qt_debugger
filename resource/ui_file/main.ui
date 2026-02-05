@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>935</width>
+    <height>568</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="btn_debug">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>240</y>
+      <width>100</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>保存数据</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_detect">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>170</y>
+      <width>100</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>监测</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cbb_topic_type">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>70</y>
+      <width>81</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>String</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Bool</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Int16</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Float32</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Header</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Twist</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Pose</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>PoseStamped</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Odometry</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Path</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="btn_publish">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>20</y>
+      <width>100</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>单次发送</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>70</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>发布话题类型：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>20</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>发布话题名：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_log">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>30</y>
+      <width>67</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>运行日志：</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="te_pub_log">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>70</y>
+      <width>321</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cbb_pub_topic">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>20</y>
+      <width>181</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>120</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>发布频率：</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="pub_frequence">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>120</y>
+      <width>81</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_publish_cyc">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>90</y>
+      <width>100</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>循环发布</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>250</y>
+      <width>67</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>接收数据：</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>289</y>
+      <width>891</width>
+      <height>251</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>180</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>接收话题名：</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cbb_received_topic">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>180</y>
+      <width>150</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_debug_2">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>20</y>
+      <width>100</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>保存日志</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>240</y>
+      <width>70</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>清空</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>20</y>
+      <width>70</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>清空</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_open_input">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>120</y>
+      <width>101</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>输入数据</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>935</width>
+     <height>28</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

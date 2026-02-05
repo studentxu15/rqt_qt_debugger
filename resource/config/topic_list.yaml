@@ -1,0 +1,6 @@
+topic_names:
+  - /chatter
+  - /cmd_vel
+  - /robot_vel
+  - /test_string
+  - /car_cmd

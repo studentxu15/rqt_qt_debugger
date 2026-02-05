@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rqt_qt_debugger</name>
+  <version>0.0.0</version>
+  <description>ROS2 Qt6可视化调试工具，支持话题发布/订阅</description>
+  <maintainer email="your_email@xxx.com">your_name</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  <buildtool_depend>setuptools</buildtool_depend>
+  <build_depend>rclpy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>python3-pyqt6</exec_depend>
+  <exec_depend>python3-pyyaml</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+    <ament_python>
+      <package_name>rqt_qt_debugger</package_name>
+    </ament_python>
+  </export>
+</package>

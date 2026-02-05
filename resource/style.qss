@@ -1,0 +1,66 @@
+/* 主窗口背景 */
+QMainWindow {
+    background-color: #f5f5f5;
+}
+/* 所有按钮 */
+QPushButton {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+QPushButton:hover {
+    background-color: #1976D2;
+}
+QPushButton:pressed {
+    background-color: #1565C0;
+}
+/* 输入框 */
+QLineEdit {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border-color: #2196F3;
+    outline: none;
+}
+/* 日志显示框 */
+QTextEdit {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 13px;
+    background-color: white;
+}
+/* 页面切换容器 */
+QStackedWidget {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+/* 标签 */
+QLabel {
+    font-size: 14px;
+    color: #333;
+}
+/* 全局清空类按钮：匹配objectName为pushButton/pushButton_2的按钮 */
+QPushButton#pushButton, QPushButton#pushButton_2 {
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* 全局保存按钮 */
+QPushButton#btn_debug, QPushButton#btn_debug_2 {
+    background-color: #52C41A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
