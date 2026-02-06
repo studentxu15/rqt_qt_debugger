@@ -4,3 +4,13 @@ topic_names:
   - /robot_vel
   - /test_string
   - /car_cmd
+  - /test_string
+  - /test_bool
+  - /test_int
+  - /test_float
+  - /test_header
+  - /test_twist
+  - /test_pose
+  - /test_posestamped
+  - /test_odometry
+  - /test_path

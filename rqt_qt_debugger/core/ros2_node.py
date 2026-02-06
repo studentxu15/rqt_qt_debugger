@@ -6,6 +6,8 @@ from std_msgs.msg import String, Bool, Int16, Float32, Header
 from geometry_msgs.msg import Twist, Pose, PoseStamped
 from nav_msgs.msg import Odometry, Path
 
+from builtin_interfaces.msg import Time
+
 class ROS2TopicNode:
     # 单例模式：全局唯一ROS2节点，避免重复初始化
     _instance = None
@@ -52,6 +54,23 @@ class ROS2TopicNode:
         """ROS2自旋，处理订阅回调，运行在子线程"""
         self.executor.spin()
 
+    def _get_ros_time_with_offset(self, offset_sec: float) -> Time:
+        """
+        核心方法：生成带时间偏移的ROS2 Time对象
+        :param offset_sec: 时间偏移量（秒），正数=未来时间，负数=过去时间，0=当前时间
+        :return: builtin_interfaces.msg.Time 类型的时间戳
+        """
+        # 获取当前ROS2系统时间（秒+纳秒）
+        now = self.node.get_clock().now()
+        # 计算偏移后的时间（将秒转换为纳秒，统一计算）
+        offset_ns = int(offset_sec * 1e9)
+        now_ns = now.nanoseconds + offset_ns
+        # 转换为ROS2标准Time对象（秒 + 纳秒）
+        ros_time = Time()
+        ros_time.sec = now_ns // 1000000000  # 总纳秒数转秒（整数部分）
+        ros_time.nanosec = now_ns % 1000000000  # 剩余纳秒数（余数部分）
+        return ros_time
+
     def publish_topic(self, topic_name, msg_type, msg_content):
         """发布话题方法（单次/循环发布通用）"""
         # 校验消息类型是否支持
@@ -67,8 +86,10 @@ class ROS2TopicNode:
             msg = self.supported_msg[msg_type]()
             if isinstance(msg_content, dict):
                 params = msg_content
-            else:
+            elif isinstance(msg_content, (str, bytes)):
                 params = [p.strip() for p in msg_content.split(",") if p.strip()]
+            else:
+                params = [msg_content]
             # #################### 基础标量类型（无时间戳） ####################
             if msg_type == "std_msgs/msg/String":
                 msg.data = msg_content
@@ -88,9 +109,9 @@ class ROS2TopicNode:
                 msg.angular.z = params["angular"].get("z", 0.0)
             # #################### 带时间戳类型：Header ####################
             elif msg_type == "std_msgs/msg/Header":
-                offset_sec = float(params[0]) if params else 0.0
+                offset_sec = params.get("time_offset", 0.0)
+                msg.frame_id = params.get("frame_id", "base_link")
                 msg.stamp = self._get_ros_time_with_offset(offset_sec)
-                msg.frame_id = params[1] if len(params)>1 else "base_link"
             # #################### 位姿类型：Pose ####################
             elif msg_type == "geometry_msgs/msg/Pose":
                 msg.position.x = params["position"].get("x", 0.0)
@@ -102,29 +123,30 @@ class ROS2TopicNode:
                 msg.orientation.z = params["orientation"].get("z", 0.0)
                 msg.orientation.w = params["orientation"].get("w", 1.0)
             elif msg_type == "geometry_msgs/msg/PoseStamped":
-                offset_sec = float(params[0]) if params else 0.0
+                offset_sec = params["header"].get("time_offset", 0.0)
+                msg.header.frame_id = params["header"].get("frame_id", "base_link")
                 msg.header.stamp = self._get_ros_time_with_offset(offset_sec)
-                msg.header.frame_id = params[1] if len(params)>1 else "base_link"
-                msg.pose.position.x = float(params[2]) if len(params)>2 else 0.0
-                msg.pose.position.y = float(params[3]) if len(params)>3 else 0.0
-                msg.pose.position.z = float(params[4]) if len(params)>4 else 0.0
-                msg.pose.orientation.x = float(params[5]) if len(params)>5 else 0.0
-                msg.pose.orientation.y = float(params[6]) if len(params)>6 else 0.0
-                msg.pose.orientation.z = float(params[7]) if len(params)>7 else 0.0
-                msg.pose.orientation.w = float(params[8]) if len(params)>8 else 1.0
+                pose_params = params["pose"]
+                msg.pose.position.x = pose_params["position"].get("x", 0.0)
+                msg.pose.position.y = pose_params["position"].get("y", 0.0)
+                msg.pose.position.z = pose_params["position"].get("z", 0.0)
+                msg.pose.orientation.x = pose_params["orientation"].get("x", 0.0)
+                msg.pose.orientation.y = pose_params["orientation"].get("y", 0.0)
+                msg.pose.orientation.z = pose_params["orientation"].get("z", 0.0)
+                msg.pose.orientation.w = pose_params["orientation"].get("w", 1.0)
             elif msg_type == "nav_msgs/msg/Odometry":
-                offset_sec = float(params[0]) if params else 0.0
+                offset_sec = params["header"].get("time_offset", 0.0)
+                msg.header.frame_id = params["header"].get("frame_id", "odom")
                 msg.header.stamp = self._get_ros_time_with_offset(offset_sec)
-                msg.header.frame_id = params[1] if len(params)>1 else "odom"
-                msg.child_frame_id = params[2] if len(params)>2 else "base_link"
-                msg.pose.pose.position.x = float(params[3]) if len(params)>3 else 0.0
-                msg.pose.pose.position.y = float(params[4]) if len(params)>4 else 0.0
-                msg.pose.pose.position.z = float(params[5]) if len(params)>5 else 0.0
-                msg.pose.pose.orientation.x = float(params[6]) if len(params)>6 else 0.0
-                msg.pose.pose.orientation.y = float(params[7]) if len(params)>7 else 0.0
-                msg.pose.pose.orientation.z = float(params[8]) if len(params)>8 else 0.0
-                msg.pose.pose.orientation.w = float(params[9]) if len(params)>9 else 1.0
-
+                msg.child_frame_id = params.get("child_frame_id", "base_link")
+                pose_params = params["pose"]
+                msg.pose.pose.position.x = pose_params["position"].get("x", 0.0)
+                msg.pose.pose.position.y = pose_params["position"].get("y", 0.0)
+                msg.pose.pose.position.z = pose_params["position"].get("z", 0.0)
+                msg.pose.pose.orientation.x = pose_params["orientation"].get("x", 0.0)
+                msg.pose.pose.orientation.y = pose_params["orientation"].get("y", 0.0)
+                msg.pose.pose.orientation.z = pose_params["orientation"].get("z", 0.0)
+                msg.pose.pose.orientation.w = pose_params["orientation"].get("w", 1.0)
             # 发布消息
             self.publishers[topic_name].publish(msg)
             return f"成功发布[{topic_name}]"
@@ -182,23 +204,23 @@ class ROS2TopicNode:
             elif isinstance(msg, Int16):
                 msg_str = f"整数：{msg.data}"
             elif isinstance(msg, Float32):
-                msg_str = f"浮点数：{msg.data:.2f}"
+                msg_str = f"浮点数：{msg.data:.6f}"
             elif isinstance(msg, Twist):
-                msg_str = (f"线速度(x:{msg.linear.x:.2f}, y:{msg.linear.y:.2f}, z:{msg.linear.z:.2f}) | "
-                           f"角速度(x:{msg.angular.x:.2f}, y:{msg.angular.y:.2f}, z:{msg.angular.z:.2f})")
+                msg_str = (f"线速度(x:{msg.linear.x:.3f}, y:{msg.linear.y:.3f}, z:{msg.linear.z:.2f}) | "
+                           f"角速度(x:{msg.angular.x:.2f}, y:{msg.angular.y:.2f}, z:{msg.angular.z:.3f})")
             elif isinstance(msg, Header):
                 msg_str = f"frame_id: {msg.frame_id}"
             elif isinstance(msg, Pose):
-                msg_str = (f"位置(x:{msg.position.x:.2f}, y:{msg.position.y:.2f}, z:{msg.position.z:.2f}) | "
-                           f"四元数(x:{msg.orientation.x:.2f}, y:{msg.orientation.y:.2f}, z:{msg.orientation.z:.2f}, w:{msg.orientation.w:.2f})")
+                msg_str = (f"位置(x:{msg.position.x:.6f}, y:{msg.position.y:.6f}, z:{msg.position.z:.6f}) | "
+                           f"四元数(x:{msg.orientation.x:.6f}, y:{msg.orientation.y:.6f}, z:{msg.orientation.z:.6f}, w:{msg.orientation.w:.6f})")
             elif isinstance(msg, PoseStamped):
                 msg_str = (f"frame_id: {msg.header.frame_id} | "
-                           f"位置(x:{msg.pose.position.x:.2f}, y:{msg.pose.position.y:.2f}), z:{msg.pose.position.z:.2f}) | "
-                           f"四元数(x:{msg.pose.orientation.x:.2f}, y:{msg.pose.orientation.y:.2f}, z:{msg.pose.orientation.z:.2f}, w:{msg.pose.orientation.w:.2f})")
+                           f"位置(x:{msg.pose.position.x:.6f}, y:{msg.pose.position.y:.6f}), z:{msg.pose.position.z:.6f}) | "
+                           f"四元数(x:{msg.pose.orientation.x:.6f}, y:{msg.pose.orientation.y:.6f}, z:{msg.pose.orientation.z:.6f}, w:{msg.pose.orientation.w:.6f})")
             elif isinstance(msg, Odometry):
                 msg_str = (f"frame_id:{msg.header.frame_id} | child_frame_id: {msg.child_frame_id} | "
-                           f"位置(x:{msg.pose.pose.position.x:.2f}, y:{msg.pose.pose.position.y:.2f}), z:{msg.pose.pose.position.z:.2f}) | "
-                           f"四元数(x:{msg.pose.pose.orientation.x:.2f}, y:{msg.pose.pose.orientation.y:.2f}, z:{msg.pose.pose.orientation.z:.2f}, w:{msg.pose.pose.orientation.w:.2f})")
+                           f"位置(x:{msg.pose.pose.position.x:.6f}, y:{msg.pose.pose.position.y:.6f}), z:{msg.pose.pose.position.z:.6f}) | "
+                           f"四元数(x:{msg.pose.pose.orientation.x:.6f}, y:{msg.pose.pose.orientation.y:.6f}, z:{msg.pose.pose.orientation.z:.6f}, w:{msg.pose.pose.orientation.w:.6f})")
             else:
                 msg_str = str(msg)
             # 转发到界面回调
