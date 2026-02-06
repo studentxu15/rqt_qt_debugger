@@ -147,6 +147,33 @@ class ROS2TopicNode:
                 msg.pose.pose.orientation.y = pose_params["orientation"].get("y", 0.0)
                 msg.pose.pose.orientation.z = pose_params["orientation"].get("z", 0.0)
                 msg.pose.pose.orientation.w = pose_params["orientation"].get("w", 1.0)
+            elif msg_type == "nav_msgs/msg/Path":
+                header_params = params.get("header", {})
+                msg.header.frame_id = header_params.get("frame_id", "map")
+                msg.header.stamp = self._get_ros_time_with_offset(0.0)
+                path_points = params.get("path_points", [])
+                if not path_points:
+                    raise ValueError("Path消息缺少路径点数据（path_points为空）")
+                for point_idx, pose_stamped_data in enumerate(path_points):
+                    if not isinstance(pose_stamped_data, dict) or "pose" not in pose_stamped_data:
+                        raise ValueError(f"第{point_idx+1}个路径点格式错误，需要包含pose的字典: {pose_stamped_data}")
+                    pose_stamped = PoseStamped()
+                    point_header = pose_stamped_data.get("header", {})
+                    point_offset = float(point_header.get("time_offset", 0.0))
+                    pose_stamped.header.frame_id = point_header.get("frame_id", msg.header.frame_id)
+                    pose_stamped.header.stamp = self._get_ros_time_with_offset(point_offset)
+                    pose_params = pose_stamped_data["pose"]
+                    pos = pose_params.get("position", {})
+                    orient = pose_params.get("orientation", {})
+                    
+                    pose_stamped.pose.position.x = float(pos.get("x", 0.0))
+                    pose_stamped.pose.position.y = float(pos.get("y", 0.0))
+                    pose_stamped.pose.position.z = float(pos.get("z", 0.0))
+                    pose_stamped.pose.orientation.x = float(orient.get("x", 0.0))
+                    pose_stamped.pose.orientation.y = float(orient.get("y", 0.0))
+                    pose_stamped.pose.orientation.z = float(orient.get("z", 0.0))
+                    pose_stamped.pose.orientation.w = float(orient.get("w", 1.0))
+                    msg.poses.append(pose_stamped)
             # 发布消息
             self.publishers[topic_name].publish(msg)
             return f"成功发布[{topic_name}]"

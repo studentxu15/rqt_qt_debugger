@@ -304,7 +304,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             unsub_res = self.ros2_node.unsubscribe_topic(topic_name)
             self.btn_detect.setText("监测")
             self._add_log(f"🔴 监测停止 | {unsub_res}")
-            self.textEdit.clear()
+            # self.textEdit.clear()
         else:
             sub_res = self.ros2_node.subscribe_topic(topic_name, self._add_receive_data)
             if "成功" in sub_res:

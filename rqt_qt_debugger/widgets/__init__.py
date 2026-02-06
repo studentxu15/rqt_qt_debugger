@@ -9,6 +9,7 @@ from .dialog_int16 import DialogInt16
 from .dialog_float32 import DialogFloat32
 from .dialog_header import DialogHeader
 from .dialog_odometry import DialogOdometry
+from .dialog_path import DialogPath
 
 # 弹窗类型映射字典：主程序根据选择的类型，一键实例化对应弹窗
 DIALOG_MAP = {
@@ -20,5 +21,6 @@ DIALOG_MAP = {
     "Int16": DialogInt16,
     "Float32": DialogFloat32,
     "Header": DialogHeader,
-    "Odometry": DialogOdometry
+    "Odometry": DialogOdometry,
+    "Path": DialogPath
 }
